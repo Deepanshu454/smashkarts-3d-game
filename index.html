@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smash Karts 3D</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Orbitron:wght@700;900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="screen">
+        <div class="loading-content">
+            <h1 class="game-title">SMASH KARTS</h1>
+            <div class="subtitle">3D ARENA</div>
+            <div class="loading-bar-container">
+                <div class="loading-bar" id="loading-bar"></div>
+            </div>
+            <p class="loading-text" id="loading-text">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Main Menu -->
+    <div id="menu-screen" class="screen hidden">
+        <div class="menu-container">
+            <h1 class="game-title">SMASH KARTS</h1>
+            <div class="subtitle">3D ARENA</div>
+
+            <div class="map-select">
+                <h3>SELECT MAP</h3>
+                <div class="map-grid" id="map-grid"></div>
+            </div>
+
+            <div class="menu-buttons">
+                <button class="btn-play" id="btn-play">▶ PLAY</button>
+                <button class="btn-settings" id="btn-settings">⚙️ SETTINGS</button>
+            </div>
+
+            <div class="controls-info">
+                <p><strong>Controls:</strong> WASD to drive • SPACE to fire • ESC to pause</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>⚙️ SETTINGS</h2>
+
+            <div class="settings-group">
+                <label>Graphics Quality</label>
+                <select id="setting-quality">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high" selected>High</option>
+                    <option value="ultra">Ultra</option>
+                </select>
+            </div>
+
+            <div class="settings-group">
+                <label>Shadow Quality</label>
+                <select id="setting-shadows">
+                    <option value="off">Off</option>
+                    <option value="low">Low</option>
+                    <option value="high" selected>High</option>
+                </select>
+            </div>
+
+            <div class="settings-group">
+                <label>Sound Volume</label>
+                <input type="range" id="setting-volume" min="0" max="100" value="80">
+                <span id="volume-value">80%</span>
+            </div>
+
+            <div class="settings-group">
+                <label>Music Volume</label>
+                <input type="range" id="setting-music" min="0" max="100" value="60">
+                <span id="music-value">60%</span>
+            </div>
+
+            <div class="settings-group">
+                <label>Camera Sensitivity</label>
+                <input type="range" id="setting-sensitivity" min="1" max="10" value="5">
+                <span id="sensitivity-value">5</span>
+            </div>
+
+            <div class="settings-group checkbox-group">
+                <label>
+                    <input type="checkbox" id="setting-particles" checked>
+                    Particle Effects
+                </label>
+            </div>
+
+            <div class="settings-group checkbox-group">
+                <label>
+                    <input type="checkbox" id="setting-screenshake" checked>
+                    Screen Shake
+                </label>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn-save" id="btn-save-settings">💾 SAVE</button>
+                <button class="btn-close" id="btn-close-settings">✕ CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div id="game-container" class="hidden">
+        <canvas id="game-canvas"></canvas>
+
+        <!-- HUD -->
+        <div id="hud">
+            <!-- Top Bar -->
+            <div class="hud-top">
+                <div class="hud-rank">
+                    <span id="rank-pos">1st</span><span class="rank-total">/12</span>
+                </div>
+                <div class="hud-health">
+                    <div class="health-bar">
+                        <div class="health-fill" id="health-fill"></div>
+                    </div>
+                    <span id="health-text">100%</span>
+                </div>
+                <div class="hud-timer">
+                    <span class="timer-icon">⏱</span>
+                    <span id="timer-text">3:00</span>
+                </div>
+                <div class="hud-round">Round <span id="round-num">1</span></div>
+            </div>
+
+            <!-- Pause/Exit Button -->
+            <button class="hud-pause-btn" id="btn-pause">⏸</button>
+
+            <!-- Leaderboard -->
+            <div class="hud-leaderboard">
+                <h3>🏆 LEADERBOARD</h3>
+                <div id="leaderboard-list"></div>
+            </div>
+
+            <!-- Minimap -->
+            <div class="hud-minimap">
+                <canvas id="minimap-canvas" width="140" height="140"></canvas>
+            </div>
+
+            <!-- Fire Button (Mobile / Visual) -->
+            <button class="fire-button hidden" id="fire-button">
+                <span class="fire-icon">🔥</span>
+                <span class="fire-text">FIRE</span>
+            </button>
+
+            <!-- Weapon Display -->
+            <div class="hud-weapon">
+                <span class="weapon-icon" id="weapon-icon">❓</span>
+                <div class="weapon-info">
+                    <div class="weapon-name" id="weapon-name">No Weapon</div>
+                    <div class="weapon-ammo" id="weapon-ammo">--</div>
+                </div>
+            </div>
+
+            <!-- FPS Counter -->
+            <div class="hud-fps" id="fps-counter">60 FPS</div>
+        </div>
+
+        <!-- Pause Menu -->
+        <div id="pause-menu" class="modal hidden">
+            <div class="modal-content pause-content">
+                <h2>⏸ PAUSED</h2>
+                <button class="btn-resume" id="btn-resume">▶ RESUME</button>
+                <button class="btn-settings" id="btn-pause-settings">⚙️ SETTINGS</button>
+                <button class="btn-exit" id="btn-exit">🚪 EXIT TO MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Post-Processing Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/SSAOPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/SSAOShader.js"></script>
+
+    <!-- Game -->
+    <script src="src/main.js"></script>
+</body>
+
+</html>
